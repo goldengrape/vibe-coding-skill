@@ -1,0 +1,227 @@
+{
+  "version": 1,
+  "items": [
+    {
+      "id": "URD-GOAL-001",
+      "kind": "goal"
+    },
+    {
+      "id": "URD-ROLE-001",
+      "kind": "role"
+    },
+    {
+      "id": "URD-SCEN-001",
+      "kind": "scenario"
+    },
+    {
+      "id": "URD-REQ-001",
+      "kind": "requirement"
+    },
+    {
+      "id": "URD-OOS-001",
+      "kind": "out_of_scope"
+    },
+    {
+      "id": "URD-AC-001",
+      "kind": "acceptance_criterion"
+    },
+    {
+      "id": "URD-CON-001",
+      "kind": "constraint"
+    },
+    {
+      "id": "URD-ASM-001",
+      "kind": "assumption"
+    },
+    {
+      "id": "URD-Q-001",
+      "kind": "question"
+    },
+    {
+      "id": "ADD-FR-001",
+      "kind": "functional_requirement"
+    },
+    {
+      "id": "ADD-DP-001",
+      "kind": "design_parameter"
+    },
+    {
+      "id": "ADD-COUP-001",
+      "kind": "accepted_coupling"
+    },
+    {
+      "id": "MDD-MOD-001",
+      "kind": "module"
+    },
+    {
+      "id": "MDD-API-001",
+      "kind": "interface"
+    },
+    {
+      "id": "MDD-DATA-001",
+      "kind": "data_structure"
+    },
+    {
+      "id": "TDD-TEST-001",
+      "kind": "acceptance_test"
+    },
+    {
+      "id": "TDD-TEST-002",
+      "kind": "contract_test"
+    },
+    {
+      "id": "TDD-TEST-003",
+      "kind": "negative_test"
+    },
+    {
+      "id": "TDD-TEST-004",
+      "kind": "regression_test"
+    },
+    {
+      "id": "RMD-TASK-001",
+      "kind": "task"
+    },
+    {
+      "id": "RMD-STOP-001",
+      "kind": "stop_condition"
+    },
+    {
+      "id": "RMD-STOP-002",
+      "kind": "stop_condition"
+    },
+    {
+      "id": "RMD-STOP-003",
+      "kind": "stop_condition"
+    },
+    {
+      "id": "RMD-RB-001",
+      "kind": "rollback_point"
+    },
+    {
+      "id": "RMD-SETUP-001",
+      "kind": "setup_item"
+    },
+    {
+      "id": "RMD-SETUP-002",
+      "kind": "setup_item"
+    },
+    {
+      "id": "RMD-SETUP-003",
+      "kind": "setup_item"
+    },
+    {
+      "id": "RMD-SETUP-004",
+      "kind": "setup_item"
+    },
+    {
+      "id": "RMD-SETUP-005",
+      "kind": "setup_item"
+    },
+    {
+      "id": "RMD-GIT-001",
+      "kind": "git_checkpoint"
+    },
+    {
+      "id": "RMD-PR-001",
+      "kind": "pull_request"
+    },
+    {
+      "id": "RMD-STOP-004",
+      "kind": "stop_condition"
+    },
+    {
+      "id": "RMD-STOP-005",
+      "kind": "stop_condition"
+    },
+    {
+      "id": "RMD-STOP-006",
+      "kind": "stop_condition"
+    },
+    {
+      "id": "RMD-RB-002",
+      "kind": "rollback_point"
+    },
+    {
+      "id": "RMD-RB-003",
+      "kind": "rollback_point"
+    },
+    {
+      "id": "RMD-RB-004",
+      "kind": "rollback_point"
+    }
+  ],
+  "links": [
+    {
+      "source": "URD-REQ-001",
+      "relation": "refines_to",
+      "target": "ADD-FR-001",
+      "note": "initial placeholder chain"
+    },
+    {
+      "source": "URD-AC-001",
+      "relation": "verified_by",
+      "target": "TDD-TEST-001",
+      "note": "initial placeholder chain"
+    },
+    {
+      "source": "ADD-FR-001",
+      "relation": "satisfied_by",
+      "target": "ADD-DP-001",
+      "note": "initial placeholder chain"
+    },
+    {
+      "source": "ADD-DP-001",
+      "relation": "implemented_by",
+      "target": "MDD-MOD-001",
+      "note": "initial placeholder chain"
+    },
+    {
+      "source": "MDD-MOD-001",
+      "relation": "exposes",
+      "target": "MDD-API-001",
+      "note": "initial placeholder chain"
+    },
+    {
+      "source": "MDD-API-001",
+      "relation": "verified_by",
+      "target": "TDD-TEST-002",
+      "note": "initial placeholder chain"
+    },
+    {
+      "source": "TDD-TEST-001",
+      "relation": "scheduled_in",
+      "target": "RMD-TASK-001",
+      "note": "initial placeholder chain"
+    },
+    {
+      "source": "ADD-COUP-001",
+      "relation": "guarded_by",
+      "target": "TDD-TEST-004",
+      "note": "only used if accepted coupling exists"
+    },
+    {
+      "source": "RMD-SETUP-001",
+      "relation": "precedes",
+      "target": "RMD-TASK-001",
+      "note": "project setup before feature work"
+    },
+    {
+      "source": "RMD-SETUP-002",
+      "relation": "precedes",
+      "target": "RMD-TASK-001",
+      "note": "package manager before feature work"
+    },
+    {
+      "source": "RMD-TASK-001",
+      "relation": "checkpointed_by",
+      "target": "RMD-GIT-001",
+      "note": "task ends with a git checkpoint"
+    },
+    {
+      "source": "RMD-GIT-001",
+      "relation": "reviewed_by",
+      "target": "RMD-PR-001",
+      "note": "remote workflow uses a PR when available"
+    }
+  ]
+}
