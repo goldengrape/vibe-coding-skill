@@ -45,7 +45,7 @@ def main() -> int:
     now = datetime.now(timezone.utc).isoformat()
 
     for item_id in [args.source, args.target]:
-        if item_id.startswith("wiki/"):
+        if item_id.startswith("okf/"):
             continue
         if not any(item.get("id") == item_id for item in data.get("items", [])):
             data.setdefault("items", []).append({"id": item_id, "created_at": now})

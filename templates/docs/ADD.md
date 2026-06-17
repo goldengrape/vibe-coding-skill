@@ -43,9 +43,9 @@ Use `X` where a DP affects an FR. Prefer diagonal. Accept triangular only when e
 | 2 |  |  |  |
 | 3 |  |  |  |
 
-## Accepted Coupling
+## 🛑 Accepted Coupling
 
-Use only when coupling remains after retries and is justified.
+Use only when coupling remains after retries and is justified. Implementation must not start until this section is complete for any unresolved coupling.
 
 | ID | Coupled FRs | Coupled DPs | Reason | Risk | Guard Tests | Refactor Trigger |
 | --- | --- | --- | --- | --- | --- | --- |

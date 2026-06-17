@@ -1,6 +1,6 @@
 # TDD — Test-Driven Document
 
-> Defines executable expectations before implementation.
+> Defines executable expectations before implementation. Tests without oracles block coding.
 
 ## Metadata
 
@@ -31,7 +31,7 @@
 
 | ID | Protects | Trigger | Oracle |
 | --- | --- | --- | --- |
-| TDD-TEST-004 | ADD-COUP-001 / DEC-001 |  |  |
+| TDD-TEST-004 | ADD-COUP-001 |  |  |
 
 ## Deferred Tests
 

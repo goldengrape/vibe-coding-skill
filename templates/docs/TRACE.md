@@ -12,7 +12,7 @@
 | MDD-MOD-001 | exposes | MDD-API-001 |  |
 | MDD-API-001 | verified_by | TDD-TEST-001 |  |
 | TDD-TEST-001 | scheduled_in | RMD-TASK-001 |  |
-| RMD-TASK-001 | summarized_by | wiki/paths/example.md |  |
+| RMD-TASK-001 | summarized_by | okf/paths/example.md |  |
 | RMD-SETUP-001 | precedes | RMD-TASK-001 | project setup before feature work |
 | RMD-SETUP-002 | precedes | RMD-TASK-001 | uv package setup for Python projects |
 | RMD-TASK-001 | checkpointed_by | RMD-GIT-001 | every completed slice should have a Git checkpoint |
@@ -27,4 +27,4 @@ Items listed here need either a trace link or removal.
 
 ## Trace Update Rule
 
-When URD, ADD, MDD, TDD, RMD, or wiki changes, update this file and `.vibe/trace.json` in the same commit/change set.
+When URD, ADD, MDD, TDD, RMD, or OKF changes, update this file and `.vibe/trace.json` in the same commit/change set.

@@ -28,7 +28,7 @@
 
 ## 给新手的解释
 
-这个 skill 会让 AI 做五件事：
+这个 skill 会让 AI 做几件关键事：
 
 1. **想法说明**：确认你到底想做什么，不做什么。
 2. **拆解方案**：把项目拆成尽量互不干扰的部分。
@@ -47,7 +47,7 @@ SKILL.md                     skill 主文件
 templates/                   初始化模板
 checklists/                  阶段检查清单
 scripts/init_project_docs.py  初始化项目文档
-scripts/check_project_docs.py 检查文档追踪、重复、wiki 膨胀等问题
+scripts/check_project_docs.py 检查文档追踪、重复、OKF 膨胀等问题
 scripts/link_project_docs.py  维护 .vibe/trace.json 和 docs/TRACE.md
 scripts/init_python_uv_project.py 初始化 Python uv 项目
 BEGINNER_GUIDE.md            给新手看的简短说明
@@ -60,9 +60,59 @@ manifest.txt                 包文件清单
 
 ```text
 docs/    正式项目说明
-wiki/    给 AI 检索用的短笔记
+okf/    给 AI 检索用的短笔记
 .vibe/   机器可读的追踪状态
 ```
+
+
+## OKF 输出
+
+原来的 AI 短笔记输出已经改为 `okf/`。`okf/` 按 OKF v0.1 组织：它是一个由 Markdown 文件组成的 Knowledge Bundle。普通 `.md` 文件是 concept document，文件相对路径去掉 `.md` 后就是 Concept ID，例如 `modules/parser`。
+
+生成 OKF 时仍然遵守一个原则：`docs/` 是事实来源，`okf/` 只做压缩、索引和检索辅助，不新增需求，也不覆盖正式文档。
+
+OKF 的关键规则：
+
+- `index.md` 和 `log.md` 是保留文件名，不是普通 concept。
+- 根 `okf/index.md` 可以用 frontmatter 声明 `okf_version: "0.1"`；其他 `index.md` 不使用 frontmatter。
+- 普通 concept 必须以 YAML frontmatter 开头，并至少包含非空 `type`。
+- 推荐字段是 `title`、`description`、`resource`、`tags`、`timestamp`。
+- `type` 没有中心注册表；读入时要能接受未知类型。
+- concept 之间使用普通 Markdown 链接，优先使用 `/modules/example.md` 这种 bundle-relative 链接。
+- 外部来源放到 `# Citations`，需要镜像成知识页时放到 `okf/references/`。
+
+概念页建议格式：
+
+```md
+---
+type: Project Requirement
+title: <Page Title>
+description: <One-sentence retrieval purpose>
+tags: [derived, requirement]
+timestamp: <ISO 8601 datetime>
+page_id: OKF-PAGE-001
+source_ids: [URD-REQ-001, ADD-DP-001]
+status: derived
+---
+
+# <Page Title>
+
+## What this page answers
+## Current facts
+## Related concepts
+See [related module](/modules/example.md).
+## Related IDs
+## Do not assume
+# Citations
+[1] [Source title](https://example.com/source)
+```
+
+
+## 安全边界
+
+这个 skill 现在把几个关键时刻标成显性检查点：想法说明完成、拆解方案接受、开发路线确认、第一次真实 push 或 merge、以及任何会覆盖已有文件的操作。遇到缺少验收标准、设计耦合无法消除、测试没有判定标准、OKF 与正式文档冲突、Git 工作区混入无关改动等情况时，必须停下来处理原因，不能假装继续。
+
+包内的 `test-prompts.json` 提供了 4 个典型测试场景，便于后续用 Darwin Skill 或其他评估流程复测这个 skill 的实际输出质量。
 
 ## 使用方式
 
@@ -122,6 +172,6 @@ python scripts/link_project_docs.py --root /path/to/project \
 
 这个 skill 不是为了写厚文档。它的目标是让 AI 在开始编码前获得足够清楚、足够短、可以追踪的项目说明。
 
-它内部使用 SDD、设计矩阵、解耦分析、测试计划、文档追踪、Git 检查点和 LLM Wiki，但这些机制默认藏在后面。对普通用户来说，它就是一个更稳的 vibe coding 起步方式。
+它内部使用 SDD、设计矩阵、解耦分析、测试计划、文档追踪、Git 检查点和 OKF，但这些机制默认藏在后面。对普通用户来说，它就是一个更稳的 vibe coding 起步方式。
 
-每次生成或更新后，都要执行奥卡姆剃刀检查：删掉重复内容、未来功能、无追踪内容，以及把 `wiki/` 写成 `docs/` 副本的内容。
+每次生成或更新后，都要执行奥卡姆剃刀检查：删掉重复内容、未来功能、无追踪内容，以及把 `okf/` 写成 `docs/` 副本的内容。

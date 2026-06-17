@@ -35,9 +35,9 @@ Beginner name: Build Path.
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | RMD-TASK-001 |  |  | URD/ADD/MDD/TDD IDs |  | `uv run pytest` | `feat/rmd-task-001-short-name` | tests pass / docs updated / commit created |
 
-## Git Checkpoints
+## 🔴 Git Checkpoints
 
-Every task should end with a checkpoint unless git is explicitly disabled.
+Every task should end with a checkpoint unless git is explicitly disabled. First push and first merge require explicit approval.
 
 | ID | RMD Task | Branch | Commit Message | PR | Merge Status | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -60,9 +60,9 @@ git push -u origin feat/rmd-task-001-short-name
 gh pr create --fill
 ```
 
-Merge only after tests/checks pass and user or repository rules approve.
+Merge only after tests/checks pass and user or repository rules approve. Do not push or merge from a dirty working tree.
 
-## Stop Conditions
+## 🛑 Stop Conditions
 
 | ID | Condition | Action |
 | --- | --- | --- |
@@ -72,6 +72,7 @@ Merge only after tests/checks pass and user or repository rules approve.
 | RMD-STOP-004 | no clean git state before implementation | pause and inspect changes |
 | RMD-STOP-005 | tests/checks fail before commit or merge | fix or route back to MDD/TDD |
 | RMD-STOP-006 | secret or local-only file appears in git diff | remove from git and update `.gitignore` |
+| RMD-STOP-007 | first push, merge, deletion, or overwrite is needed | stop for explicit approval |
 
 ## Rollback Points
 

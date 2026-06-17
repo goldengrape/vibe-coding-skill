@@ -138,6 +138,10 @@
       "kind": "stop_condition"
     },
     {
+      "id": "RMD-STOP-007",
+      "kind": "stop_condition"
+    },
+    {
       "id": "RMD-RB-002",
       "kind": "rollback_point"
     },

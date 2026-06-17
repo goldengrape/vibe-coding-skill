@@ -40,7 +40,7 @@ def remove_standard_only_files(target: Path, level: str) -> None:
     if level != "simple":
         return
     # In simple mode, keep only the documents needed to avoid early bloat.
-    for rel in ["docs/MDD.md", "docs/RMD.md"]:
+    for rel in ["docs/MDD.md", "docs/RMD.md", "okf/log.md"]:
         path = target / rel
         if path.exists():
             path.unlink()
@@ -56,8 +56,23 @@ def update_doc_state(target: Path, level: str) -> None:
     path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
 
+def render_dynamic_templates(target: Path) -> None:
+    now = datetime.now(timezone.utc)
+    replacements = {
+        "{{DATE}}": now.date().isoformat(),
+        "{{TIMESTAMP}}": now.isoformat(),
+    }
+    for path in target.rglob("*.md"):
+        text = path.read_text(encoding="utf-8")
+        updated = text
+        for old, new in replacements.items():
+            updated = updated.replace(old, new)
+        if updated != text:
+            path.write_text(updated, encoding="utf-8")
+
+
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Initialize project docs/wiki/.vibe for a new Vibe Coding project.")
+    parser = argparse.ArgumentParser(description="Initialize project docs/okf/.vibe for a new Vibe Coding project.")
     parser.add_argument("--target", default=".", help="Target project directory")
     parser.add_argument("--level", default="standard", choices=sorted(LEVELS), help="Document strength")
     parser.add_argument("--force", action="store_true", help="Overwrite existing template files")
@@ -73,6 +88,7 @@ def main() -> int:
 
     written = copy_tree(templates, target, args.force)
     remove_standard_only_files(target, args.level)
+    render_dynamic_templates(target)
     update_doc_state(target, args.level)
 
     print(f"Initialized Vibe Coding docs at: {target}")

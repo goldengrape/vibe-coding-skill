@@ -3,5 +3,7 @@
   "document_strength": "standard",
   "last_updated": null,
   "source_of_truth": "docs",
-  "wiki_is_derived": true
+  "okf_is_derived": true,
+  "okf_version": "0.1",
+  "okf_conformance": "OKF v0.1 draft"
 }

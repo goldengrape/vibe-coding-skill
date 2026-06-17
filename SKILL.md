@@ -1,6 +1,6 @@
 ---
 name: vibe-coding-skill
-description: Help beginners and non-programmers do safer vibe coding by turning a rough software idea into a small, clear, AI-readable project plan before implementation. Also guides safe project initialization, Python uv setup, git checkpoints, pull requests, merges, document updates, tests, and AI-readable wiki maintenance.
+description: Help beginners and non-programmers do safer vibe coding by turning a rough software idea into a small, clear, AI-readable project plan before implementation. Use for new project ideas, MVP planning, URD/ADD/MDD/TDD/RMD docs, Python uv setup, git checkpoints, PR/merge safety, trace updates, and OKF AI notes.
 ---
 
 # Vibe Coding Skill
@@ -29,7 +29,7 @@ Use these names in normal conversation:
 | Project Map | `docs/TRACE.md` | Links from idea → design → code tasks → tests. |
 | Project Setup | `pyproject.toml`, `.gitignore`, source and test folders | The starter files needed before coding. |
 | Git Checkpoint | git branch, commit, pull request, merge | A safe save-and-review point after each build slice. |
-| AI Notes | `wiki/` | Short pages that help an AI retrieve the right context. |
+| AI Notes | `okf/` | Short pages that help an AI retrieve the right context. |
 
 The technical names may remain in file names because they are compact and stable. Do not force the user to learn the acronyms before they can use the skill.
 
@@ -52,8 +52,9 @@ docs/
   CHANGELOG.md
   PARKING_LOT.md
 
-wiki/
+okf/
   index.md
+  log.md
   terms/
   requirements/
   decisions/
@@ -62,6 +63,7 @@ wiki/
   tests/
   paths/
   issues/
+  references/
 
 .vibe/
   trace.json
@@ -70,11 +72,69 @@ wiki/
   update_log.json
 ```
 
-`docs/` is the source of truth. `wiki/` is a derived AI-readable knowledge layer. `.vibe/` contains machine-readable state and trace files.
+`docs/` is the source of truth. `okf/` is a derived AI-readable knowledge layer. `.vibe/` contains machine-readable state and trace files.
 
 This skill is optimized for new projects. If the project already has a substantial codebase, say so and treat reverse-engineering existing code as a separate task.
 
 ## Core behavior
+
+### 0. Operating guardrails
+
+Use these guardrails in every mode. They prevent the AI from moving from planning to coding too early.
+
+#### 🔴 CHECKPOINT moments
+
+Pause and show the user the current decision before continuing when any of these happen:
+
+| Moment | What to show | Continue only when |
+| --- | --- | --- |
+| Idea Brief is complete | target user, core task, scope, non-scope, constraints, assumptions, open questions | the user accepts or gives corrections |
+| Design Split is classified | FR/DP list, design matrix, classification, retry log | uncoupled/decoupled design is accepted, or accepted coupling is explicitly recorded |
+| Build Path is ready | first 3 RMD tasks, test commands, rollback points, Git checkpoint plan | the user agrees this is the implementation order |
+| First real push or merge | remote name, branch, PR/merge action, tests run | the user or repo rules approve the remote action |
+| Document rewrite would overwrite existing work | files to change, backup or diff summary | the user confirms overwrite or chooses a smaller edit |
+
+#### 🛑 STOP conditions
+
+Stop the current action and route the issue back to the right document when any condition below is true:
+
+| Trigger | Required action |
+| --- | --- |
+| The user asks to code before URD has a user, task, scope, and success criterion | explain the missing decision and ask one concrete question, or create a labeled assumption if it does not block the next step |
+| ADD remains coupled after 3 structural retries | create an Accepted Coupling record with risks and guard tests before implementation |
+| A test has no oracle | update TDD before writing implementation code |
+| MDD lacks an interface contract for a public API | update MDD before writing that API |
+| OKF contradicts docs | write `okf/issues/PROB-xxxx.md`, then fix `docs/` first |
+| Git working tree contains unrelated changes | show `git status`, avoid committing unrelated files, and ask before touching them |
+| A push, merge, deletion, secret exposure, or irreversible operation is needed | ask for explicit permission before executing |
+
+#### Failure handling table
+
+| Failure mode | First response | Fallback if still blocked |
+| --- | --- | --- |
+| User gives a vague idea | ask one high-value question with 2–3 options | record assumptions and proceed with simple docs only |
+| User wants a one-off script | offer `simple` mode and explain what will be skipped | if they still want no docs, do not force this skill; answer the coding request directly |
+| Existing repo already has files | inspect before writing and preserve existing files by default | write proposed changes to new files or backups instead of overwriting |
+| `uv` is unavailable | create `pyproject.toml`, `.gitignore`, `tests/`, and README fallback files | tell the user the exact `uv` command to run later |
+| Tests cannot run | record the command, failure output, and affected RMD task | block merge and add a TDD/RMD note with next diagnostic step |
+| No git remote exists | make local commits only | record `PR skipped: no remote` in RMD |
+| OKF page is too long | split it by retrieval question | keep only navigation in `index.md` and move facts into concept pages |
+| Trace link is missing | add the smallest missing link | if source or target ID is unclear, create a parking-lot or issue entry instead of inventing the ID |
+
+#### Anti-pattern blacklist
+
+Do not do these things when this skill is active:
+
+1. Do not start feature implementation before the Idea Brief and Check Plan have enough facts to define success.
+2. Do not turn OKF pages into copies of `docs/` pages.
+3. Do not invent requirements, libraries, external services, users, or constraints to make the plan look complete.
+4. Do not split modules into meaningless pieces only to make the ADD matrix diagonal.
+5. Do not hide accepted coupling; record it with guard tests.
+6. Do not commit secrets, `.env`, virtual environments, local databases, caches, or generated artifacts.
+7. Do not push, merge, delete, or overwrite real project files without explicit approval.
+8. Do not regenerate every document when a local update is enough.
+9. Do not create IDs that are never referenced by TRACE or OKF.
+10. Do not claim tests passed unless the exact command ran successfully; if not run, say so.
 
 ### 1. Start with a plain-language explanation when needed
 
@@ -119,7 +179,7 @@ Ask when any of these are unclear:
 
 Do not ask endlessly. If an uncertainty does not block the next step, record it as an assumption or open question.
 
-The Idea Brief may move to Design Split only when all of these are present:
+The Idea Brief may move to Design Split only after the first 🔴 CHECKPOINT and when all of these are present:
 
 - at least one target user or user role
 - at least one core user task
@@ -149,7 +209,7 @@ Avoid these forms of document bloat:
 - writing future features into the current version
 - adding generic architecture lessons
 - adding implementation detail before it is needed
-- turning wiki pages into copies of docs pages
+- turning OKF concept pages into copies of docs pages
 - creating IDs that are never referenced
 - keeping stale assumptions after the user has answered them
 
@@ -160,7 +220,7 @@ After every generation or update, run this check:
 ```text
 For each newly added paragraph:
 1. Does it serve the current phase?
-2. Is it linked to a requirement, design part, module, interface, test, task, or wiki page?
+2. Is it linked to a requirement, design part, module, interface, test, task, or OKF concept page?
 3. Is it repeated elsewhere?
 4. Does it describe a future feature rather than current scope?
 5. Could it be derived reliably from another document?
@@ -185,7 +245,7 @@ Matrix interpretation:
 - triangular matrix: decoupled design with an execution order
 - dense or irregular matrix: coupled design
 
-When Design Split detects coupling, retry the design decomposition before accepting it.
+When Design Split detects coupling, retry the design decomposition before accepting it. If the retry loop fails, trigger the ADD coupling 🛑 STOP condition.
 
 Coupling retry loop:
 
@@ -211,22 +271,37 @@ For accepted coupling, record:
 
 Do not split the system into meaningless pieces just to make a pretty matrix. That violates Ockham's razor.
 
-### 5. Keep docs authoritative and wiki derived
+### 5. Keep docs authoritative and OKF derived
 
-`docs/` contains project specifications and decisions. `wiki/` contains compressed retrieval pages for AI tools.
+`docs/` contains project specifications and decisions. `okf/` contains an OKF v0.1 knowledge bundle derived from those docs.
+
+OKF shape:
+
+- `okf/` is a Knowledge Bundle: a self-contained directory tree of UTF-8 Markdown files.
+- Every non-reserved `.md` file is a Concept document. Its Concept ID is its bundle-relative path without `.md`, such as `modules/parser`.
+- Concept files start with parseable YAML frontmatter, followed by a Markdown body.
+- Every concept frontmatter must include a non-empty `type` field. OKF has no central type registry; use descriptive types and tolerate unknown types when reading.
+- Recommended frontmatter fields, in priority order, are `title`, `description`, `resource`, `tags`, and `timestamp`.
+- Skill-specific extension fields such as `page_id`, `source_ids`, and `status` are allowed because OKF permits producer-defined keys. Preserve unknown keys when editing.
+- `index.md` and `log.md` are reserved filenames at any level and must not be used as concept documents.
+- `index.md` is for progressive disclosure. It lists nearby concepts and subdirectories with relative links and short descriptions. Only the bundle-root `okf/index.md` may use frontmatter, and only to declare `okf_version: "0.1"`.
+- `log.md` is optional update history. Date headings use `## YYYY-MM-DD`, newest first.
+- Use normal Markdown links between concepts. Prefer bundle-relative absolute links such as `/modules/parser.md`; relative links are allowed. Broken links are warnings, not fatal errors.
+- When body text relies on external sources, collect numbered links under `# Citations`. External material may also be mirrored as first-class concept pages under `okf/references/`.
 
 Rules:
 
-- Change docs first, then update wiki.
-- Wiki must not introduce new requirements.
-- Wiki must not silently override docs.
-- If wiki compilation exposes a conflict, create `wiki/issues/PROB-xxxx.md`, then route the fix back to URD, ADD, MDD, TDD, or RMD.
-- Prefer many short wiki pages over one long page.
-- A wiki page should answer one retrieval question.
+- Change docs first, then update OKF.
+- OKF must not introduce new requirements.
+- OKF must not silently override docs.
+- If OKF compilation exposes a conflict, create `okf/issues/PROB-xxxx.md`, then route the fix back to URD, ADD, MDD, TDD, or RMD.
+- Prefer many short OKF concept pages over one long page.
+- An OKF concept page should answer one retrieval question.
+- Treat OKF conformance errors narrowly: missing or invalid concept frontmatter, missing `type`, or malformed reserved files. Treat optional fields, unknown fields, unknown types, and broken links as warnings.
 
 ### 6. Initialize the coding project before implementation
 
-Before implementation begins, create a small, conventional project structure. Do not let the AI write feature code into a messy or undefined folder.
+Before implementation begins, create a small, conventional project structure and pass the Build Path 🔴 CHECKPOINT. Do not let the AI write feature code into a messy or undefined folder.
 
 For beginner-facing explanation, say:
 
@@ -240,8 +315,8 @@ Stack defaults:
 
 - If the user already chose a stack, use it.
 - If the project is automation, CLI, data processing, API, bot, backend, or a general small tool, default to Python unless another stack is clearly better.
-- If the project is a static website or visual prototype, consider HTML/CSS/JavaScript first.
-- If unsure, ask one short question with 2–3 concrete options.
+- If the project is a static website or visual prototype, default to HTML/CSS/JavaScript unless the user already chose another stack.
+- If the stack is unclear, ask one short question with 2–3 concrete options.
 
 Python project defaults:
 
@@ -278,7 +353,7 @@ The exact dependencies must come from MDD/TDD needs. Do not add frameworks specu
 
 ### 7. Use Git Checkpoints in the Build Path
 
-Every RMD implementation slice must end with a Git checkpoint unless the user explicitly disables git.
+Every RMD implementation slice must end with a Git checkpoint unless the user explicitly disables git. First remote push and first merge are 🔴 CHECKPOINT moments.
 
 A checkpoint means:
 
@@ -286,7 +361,7 @@ A checkpoint means:
 1. Start from a clean main branch.
 2. Create a short feature branch for one RMD task or one small slice.
 3. Implement only that slice.
-4. Update affected docs and wiki.
+4. Update affected docs and OKF.
 5. Run relevant tests and checks.
 6. Review git diff and git status.
 7. Commit with a clear message linked to RMD/URD/TDD IDs.
@@ -362,7 +437,7 @@ RMD-TASK-001
 RMD-GIT-001
 RMD-PR-001
 RMD-STOP-001
-WIKI-PAGE-001
+OKF-PAGE-001
 PROB-001
 DEC-001
 ```
@@ -379,10 +454,10 @@ URD-REQ-001
   -> MDD-API-001
   -> TDD-TEST-001
   -> RMD-TASK-001
-  -> wiki/modules/example.md
+  -> okf/modules/example.md
 ```
 
-When a document changes, update affected downstream documents and trace records. If uncertain, create an issue page and stop before inventing behavior.
+When a document changes, update affected downstream documents and trace records. If uncertain, create an issue page and trigger the relevant 🛑 STOP condition before inventing behavior.
 
 ## Document strength levels
 
@@ -398,9 +473,9 @@ Create:
 - `docs/ADD.md`
 - `docs/TDD.md`
 - `docs/TRACE.md`
-- minimal wiki index only
+- minimal OKF bundle: root `okf/index.md` plus concept pages only when they help retrieval
 
-MDD and RMD can be compressed into ADD/TDD if the system has only one or two modules.
+MDD, RMD, and OKF log history can be omitted until the project needs them.
 
 ### standard
 
@@ -416,7 +491,7 @@ Create full docs:
 - TRACE
 - CHANGELOG
 - PARKING_LOT
-- wiki pages
+- OKF concept pages
 
 ### strict
 
@@ -464,7 +539,7 @@ Goal: create the directory structure and empty templates.
 Actions:
 
 1. Determine document strength: simple, standard, or strict.
-2. Create `docs/`, `wiki/`, and `.vibe/`.
+2. Create `docs/`, `okf/`, and `.vibe/`.
 3. Populate templates.
 4. Tell the user what was created using friendly names.
 5. Ask the next Idea Brief question.
@@ -501,7 +576,7 @@ Rules:
 - Create `.gitignore` before the first commit.
 - Create tests folder before feature work.
 - If uv is not installed, create files without installing dependencies and explain the next installation step.
-- If a remote exists, do not push until the user has approved the remote target.
+- If a remote exists, do not push until the user has approved the remote target at a 🔴 CHECKPOINT.
 
 Recommended command:
 
@@ -517,7 +592,7 @@ Inputs:
 
 - one RMD task ID
 - changed code files
-- changed docs/wiki files
+- changed docs/okf files
 - relevant test commands
 - current branch and remote state
 
@@ -535,7 +610,7 @@ Rules:
 - Commit only after tests/checks and doc updates are complete, unless making an explicit WIP commit requested by the user.
 - Commit messages should include the RMD task ID.
 - PR description should include: what changed, how tested, affected docs, known risks.
-- Merge only after tests pass and the user or repo rules approve.
+- Merge only after tests pass and the user or repo rules approve at a 🔴 CHECKPOINT.
 - If push/PR/merge is not possible, record the reason and keep the local commit.
 
 ### mode: discover_urd
@@ -650,36 +725,49 @@ Rules:
 
 - Order tasks by dependency and risk.
 - Prefer interface stubs and failing tests before implementation.
-- Add stop conditions for unresolved requirements, coupling violations, or missing test oracles.
+- Add 🛑 STOP conditions for unresolved requirements, coupling violations, missing contracts, unsafe Git actions, and missing test oracles.
 - Add rollback points after interface design, test creation, and each completed module.
 - Each RMD task must include a Git checkpoint: branch name, commit point, PR status, merge status, and test command.
 - If the user is working without a remote, mark PR and merge as local-only or skipped with reason.
 
-### mode: compile_wiki
+### mode: compile_okf
 
-Goal: compile docs into short AI Notes.
+Goal: compile docs into a small OKF v0.1 Knowledge Bundle for AI Notes.
 
 Inputs:
 
 - all docs
 - trace files
+- existing `okf/` pages, if any
 
 Outputs:
 
-- `wiki/index.md`
-- focused wiki pages
+- `okf/index.md` with progressive-disclosure links
+- focused OKF concept pages
+- optional `okf/log.md` update history
+- optional `okf/references/` pages for mirrored external references
 - issue pages for conflicts
 
 Rules:
 
-- Do not copy full docs into wiki.
+- Do not copy full docs into OKF.
 - Make each page short and task-oriented.
-- Include source doc IDs, not long source text.
+- Generate one Markdown file per concept.
+- Use the bundle-relative file path without `.md` as the Concept ID; keep paths stable after linking.
+- Start each concept with YAML frontmatter and include a non-empty `type` field.
+- Add `title`, `description`, `resource`, `tags`, and `timestamp` when they improve retrieval or provenance.
+- Include source doc IDs in the extension field `source_ids`, not long source text.
+- Use normal Markdown links to connect concepts. Prefer absolute bundle-relative links like `/requirements/login.md`.
+- Use `# Schema`, `# Examples`, and `# Citations` only when they fit the concept.
+- Put external supporting links under `# Citations`, or mirror durable source summaries under `okf/references/`.
+- Use `okf/index.md` and subdirectory `index.md` files for navigation and short descriptions.
+- Use `okf/log.md` only for chronological bundle updates, with `## YYYY-MM-DD` headings.
 - If docs conflict, write an issue page and route the fix back to docs.
+- Do not reject an OKF page only because it has unknown frontmatter keys, unknown `type`, missing optional fields, or a broken internal link. Warn and continue.
 
 ### mode: update_docs
 
-Goal: update docs and wiki when requirements, decisions, tests, or planned paths change.
+Goal: update docs and OKF when requirements, decisions, tests, or planned paths change.
 
 Inputs:
 
@@ -690,7 +778,7 @@ Outputs:
 
 - changed docs
 - updated trace
-- updated wiki
+- updated OKF
 - updated changelog
 
 Update process:
@@ -700,7 +788,7 @@ Update process:
 2. Locate downstream items through TRACE.
 3. Update the smallest necessary set of documents.
 4. Update trace records.
-5. Update or regenerate affected wiki pages.
+5. Update or regenerate affected OKF concept pages.
 6. Add an entry to CHANGELOG.
 7. Run Ockham check and trace lint.
 ```
@@ -716,8 +804,9 @@ Before handing off project docs, verify:
 - Building Blocks does not repeat the Idea Brief; it references IDs.
 - Check Plan has test oracles and requirement links.
 - Build Path has task order, stop conditions, and rollback points.
-- Project Map connects requirements to design, modules, tests, tasks, and wiki.
-- Wiki pages are short and derived from docs.
+- Project Map connects requirements to design, modules, tests, tasks, and OKF.
+- OKF concept pages are short, linked, and derived from docs.
+- OKF reserved files follow their roles: `index.md` for navigation, `log.md` for dated update history.
 - PARKING_LOT contains future ideas that should not pollute current scope.
 - CHANGELOG records document changes.
 - Ockham check has removed repetition and speculative content.

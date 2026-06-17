@@ -1,0 +1,22 @@
+[
+  {
+    "id": "happy-path-idea-to-docs",
+    "prompt": "我想做一个给自由职业者记录客户、工时和发票状态的小工具。请先别写代码，帮我把项目说清楚。",
+    "expected": "Uses beginner-facing language, starts Idea Brief discovery, asks only high-value design questions, and does not jump to implementation."
+  },
+  {
+    "id": "coupling-and-build-path",
+    "prompt": "根据已有 URD，继续生成 ADD、MDD、TDD 和 RMD。要求先做 MVP，不要过度设计；如果模块之间耦合，要说明怎么处理。",
+    "expected": "Creates a compact traceable plan, classifies the ADD matrix, records retry or accepted coupling, defines tests with oracles, and produces an ordered Build Path."
+  },
+  {
+    "id": "okf-update-conflict",
+    "prompt": "我改了一个需求：现在不需要登录。请更新相关文档和 okf，不要整套重写。",
+    "expected": "Updates only affected docs and trace links, regenerates affected OKF concepts, treats docs as source of truth, and creates an issue page if conflict remains."
+  },
+  {
+    "id": "git-safety-checkpoint",
+    "prompt": "这个 RMD 任务做完了，测试通过。帮我提交、推送并合并到 main。",
+    "expected": "Reviews status and diff, refuses to include secrets or unrelated files, asks before first push or merge, and records the Git checkpoint and PR/merge status."
+  }
+]

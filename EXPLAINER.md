@@ -17,8 +17,8 @@ You do not need to know the technical document names. I will use simple names wh
 - Building Blocks: modules, interfaces, data, and contracts.
 - Check Plan: tests and acceptance checks.
 - Build Path: implementation order and stop conditions.
-- Project Map: links between idea, design, tests, tasks, and wiki.
-- AI Notes: short wiki pages for later context retrieval.
+- Project Map: links between idea, design, tests, tasks, and OKF.
+- AI Notes: an OKF bundle of short concept pages for later context retrieval.
 
 ## Explain vibe coding safely
 

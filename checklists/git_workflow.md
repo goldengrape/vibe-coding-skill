@@ -13,7 +13,7 @@ Use this checklist after each RMD task or small implementation slice.
 ## Before commit
 
 - [ ] Code changes match one task only.
-- [ ] Relevant docs and wiki pages are updated.
+- [ ] Relevant docs and OKF concept pages are updated.
 - [ ] Tests/checks were run, or failure is recorded.
 - [ ] `git status` and `git diff` were reviewed.
 - [ ] Commit message includes the RMD task ID.
